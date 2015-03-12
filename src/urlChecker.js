@@ -1,3 +1,7 @@
-/**
- * Created by Jakob on 12.03.2015.
- */
+var logger              = require('./logger');
+var request             = require('request-promise');
+var Promise             = require('bluebird');
+
+module.exports.check = function(url) {
+
+};
