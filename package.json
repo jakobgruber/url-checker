@@ -1,0 +1,19 @@
+{
+  "name": "url-tester",
+  "version": "0.0.1",
+  "description": "checks urls from rss-feeds",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server.js"
+  },
+  "author": "Jakob Gruber",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.14",
+    "express": "^4.12.2",
+    "request-promise": "^0.4.0",
+    "winston": "^0.9.0",
+    "xml2js": "^0.4.5"
+  }
+}
