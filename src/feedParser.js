@@ -1,8 +1,6 @@
 var Promise     = require('bluebird');
 var request     = require('request-promise');
 
-var logger      = require('./logger');
-
 var parseString = Promise.promisify(require('xml2js').parseString);
 
 module.exports.getItemUrlsFromFeed = function(feedUrl) {
@@ -11,9 +9,6 @@ module.exports.getItemUrlsFromFeed = function(feedUrl) {
     request(feedUrl)
         .then(function(data) {
             return parseString(data);
-        }).then(function(result) {
-            logger.debug(result);
-            return JSON.stringify(result);
         }).then(function(feedObj) {
             var links = getLinksFrom(feedObj);
             deferred.resolve(links);
@@ -26,10 +21,20 @@ module.exports.getItemUrlsFromFeed = function(feedUrl) {
     return deferred.promise;
 };
 
-
 var getLinksFrom = function(feedObj) {
+    var links = [];
 
-    logger.info('test');
+    if (feedObj && feedObj.rss && feedObj.rss.channel && feedObj.rss.channel.length >= 1) {
+        var channel = feedObj.rss.channel[0];
 
-    return [];
+        if(channel.item && Array.isArray(channel.item)) {
+            channel.item.forEach(function(item) {
+                if (item.link && Array.isArray(item.link) && Array.length >= 1) {
+                    links.push(item.link[0]);
+                }
+            });
+        }
+    }
+
+    return links;
 };

@@ -6,8 +6,12 @@ var logger              = require('./logger');
 
 var app = express();
 
-parserManager.startParsing();
-
+app.get('/check', function(req, res) {
+    parserManager.startParsing()
+        .then(function(data) {
+            res.json(data);
+        });
+});
 
 app.listen(config.port);
 logger.info('Magic happens on port ' + config.port);

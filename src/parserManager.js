@@ -2,14 +2,15 @@ var logger              = require('./logger');
 var config              = require('./config');
 var feedParser          = require('./feedParser');
 var urlChecker          = require('./urlChecker');
-var UrlNotValidError    = require('./customError').UrlNotValidError;
+var Promise             = require('bluebird');
+var errors              = require('request-promise/errors');
 
 var successCount = 0;
 var failedCount = 0;
 
 module.exports.startParsing = function() {
     init();
-    config.rssFeedUrls.forEach(parseRssFeed);
+    return Promise.map(config.rssFeedUrls, parseRssFeed);
 };
 
 var init = function() {
@@ -18,21 +19,32 @@ var init = function() {
 };
 
 var parseRssFeed = function(feedUrl) {
-    feedParser.getItemUrlsFromFeed(feedUrl)
+    logger.info('start parsing ' + feedUrl);
+    return feedParser.getItemUrlsFromFeed(feedUrl)
         .then(function(itemUrls) {
-            checkItemUrls(itemUrls);
+            logger.info(itemUrls.length + ' item-urls found');
+            return checkItemUrls(itemUrls);
         });
 };
 
 var checkItemUrls = function(itemUrls) {
-    itemUrls.forEach(function(itemUrl) {
-        urlChecker.check(itemUrl)
+    return Promise.map(itemUrls, function(itemUrl) {
+        return urlChecker.check(itemUrl)
             .then(function(data) {
-                logger.info('successfully - ' + data.url);
-            }).catch(UrlNotValidError, function(err) {
-                logger.error('failed - ' + err.message);
+                successCount++;
+            }).catch(errors.RequestError, function (reason) {
+                logger.error('RequestError - ' + reason.options.uri + ' - ' + reason.statusCode);
+                failedCount++;
+            }).catch(errors.StatusCodeError, function (reason) {
+                logger.error('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
+                failedCount++;
             }).catch(function(err) {
                 logger.error(err);
+                failedCount++;
             });
+    }).then(function() {
+        logger.info('finished - success: ' + successCount + ', failed: ' + failedCount);
+
+        return {successCount: successCount, failedCount: failedCount};
     });
 };
