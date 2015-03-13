@@ -3,5 +3,7 @@ module.exports = {
 
     'rssFeedUrls': [
         'http://www.autorevue.at/feed/app-latest'
-    ]
+    ],
+
+    'waitTimeAfterRequestInSec': 1
 };
