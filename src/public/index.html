@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>url-checker</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <section>
+        <div class="main-panel">
+            <h3>url checker</h3>
+            <button id="start-check">start</button>
+        </div>
+
+        <div class="result-panel" id="result-panel">
+        </div>
+
+    </section>
+
+
+    <script id="new-msg-template" type="text/x-handlebars-template">
+        <p class="{{class}}">{{msg}}</p>
+    </script>
+    <script id="new-result-template" type="text/x-handlebars-template">
+        <p class="result">
+            feed-url: {{feedUrl}} - success: {{successCount}} - failed: {{failedCount}}
+        </p>
+    </script>
+
+    <!--Your new content will be displayed in here-->
+    <div class="content-placeholder"></div>
+
+    <script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v3.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script src="scripts.js"></script>
+
+</body>
+</html>

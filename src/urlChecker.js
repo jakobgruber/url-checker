@@ -2,8 +2,6 @@ var request             = require('request-promise');
 var Promise             = require('bluebird');
 var validator           = require('validator');
 
-var config              = require('./config');
-
 // some websites blocks requests from non-browser-agents and response with 404
 var requestOptions = {
     resolveWithFullResponse: true,
@@ -32,10 +30,7 @@ module.exports.check = function(url) {
 var checkRequestPromise = function(requestPromise, deferred, url) {
     requestPromise
         .then(function (response) {
-            // be nice and give the server a break after every request
-            setTimeout(function() {
-                deferred.resolve({reachable: true, url: url});
-            }, config.waitTimeAfterRequestInSec);
+            deferred.resolve({reachable: true, url: url});
         })
         .catch(function (err) {
             deferred.reject(err);

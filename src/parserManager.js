@@ -1,8 +1,9 @@
+var Promise             = require('bluebird');
+var errors              = require('request-promise/errors');
+
 var logger              = require('./logger');
 var feedParser          = require('./feedParser');
 var urlChecker          = require('./urlChecker');
-var Promise             = require('bluebird');
-var errors              = require('request-promise/errors');
 
 var successCount = 0;
 var failedCount = 0;
@@ -12,17 +13,21 @@ module.exports.startParsing = function(rssFeedUrls) {
     return Promise.map(rssFeedUrls, parseRssFeed);
 };
 
+module.exports.setSocketWrapper = function(_socketWrapper) {
+    socketWrapper = _socketWrapper;
+};
+
 var init = function() {
     successCount = 0;
     failedCount = 0;
 };
 
 var parseRssFeed = function(feedUrl) {
-    logger.info('start parsing ' + feedUrl);
+    socketWrapper.broadCastNewStatus('start parsing ' + feedUrl);
 
     return feedParser.getItemUrlsFromFeed(feedUrl)
         .then(function(itemUrls) {
-            logger.info(itemUrls.length + ' item-urls found');
+            socketWrapper.broadCastNewStatus(itemUrls.length + ' item-urls found for ' + feedUrl);
             return checkItemUrls(itemUrls, feedUrl);
         });
 };
@@ -31,20 +36,23 @@ var checkItemUrls = function(itemUrls, feedUrl) {
     return Promise.map(itemUrls, function(itemUrl) {
         return urlChecker.check(itemUrl)
             .then(function(data) {
+                socketWrapper.broadCastNewStatus('success - ' + itemUrl);
                 successCount++;
             }).catch(errors.RequestError, function (reason) {
-                logger.error('RequestError - ' + reason.options.uri + ' - ' + reason.statusCode);
+                socketWrapper.broadCastErrorMsg('RequestError - ' + reason.options.uri + ' - ' + reason.statusCode);
                 failedCount++;
             }).catch(errors.StatusCodeError, function (reason) {
-                logger.error('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
+                socketWrapper.broadCastErrorMsg('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
                 failedCount++;
             }).catch(function(err) {
-                logger.error(err);
+                socketWrapper.broadCastErrorMsg(err);
                 failedCount++;
             });
     }).then(function() {
-        logger.info('finished - success: ' + successCount + ', failed: ' + failedCount);
+        var result = {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
 
-        return {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
+        socketWrapper.broadCastResult(result);
+
+        return result;
     });
 };

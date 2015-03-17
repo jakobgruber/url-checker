@@ -6,6 +6,12 @@ chai.use(chaiAsPromised);
 var parserManager   = require('./../../../src/parserManager');
 var config          = require('./../../../src/config');
 
+var dummySocketWrapper = {
+    broadCastNewStatus: function() {},
+    broadCastErrorMsg: function() {},
+    broadCastResult: function() {}
+};
+
 describe("test parser manager", function() {
     var app, express, server;
 
@@ -16,6 +22,8 @@ describe("test parser manager", function() {
 
         app.use(express.static(__dirname + '/files'));
         server = app.listen(config.testPort);
+
+        parserManager.setSocketWrapper(dummySocketWrapper);
     });
 
     after(function() {
