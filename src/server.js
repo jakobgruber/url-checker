@@ -7,7 +7,7 @@ var logger              = require('./logger');
 var app = express();
 
 app.get('/check', function(req, res) {
-    parserManager.startParsing()
+    parserManager.startParsing(config.rssFeedUrls)
         .then(function(data) {
             res.json(data);
         });

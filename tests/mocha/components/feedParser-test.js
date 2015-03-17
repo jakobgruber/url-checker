@@ -41,7 +41,7 @@ describe("test feed parsing", function() {
         return expect(feedParser.getItemUrlsFromFeed(validFeedUrl)).to.be.fulfilled;
     });
 
-    it ("should contains three links after parsing", function() {
-        return expect(feedParser.getItemUrlsFromFeed(validFeedUrl)).to.eventually.have.length(3);
+    it ("should contains four links after parsing", function() {
+        return expect(feedParser.getItemUrlsFromFeed(validFeedUrl)).to.eventually.have.length(4);
     });
 });

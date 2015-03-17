@@ -71,5 +71,6 @@
                 <item><title>test</title></item>
                 <item><link></link></item>
 
-                </channel>
+                <item><link>invalid url</link></item>
+         </channel>
     </rss>

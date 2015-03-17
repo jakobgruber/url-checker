@@ -1,5 +1,4 @@
 var logger              = require('./logger');
-var config              = require('./config');
 var feedParser          = require('./feedParser');
 var urlChecker          = require('./urlChecker');
 var Promise             = require('bluebird');
@@ -8,9 +7,9 @@ var errors              = require('request-promise/errors');
 var successCount = 0;
 var failedCount = 0;
 
-module.exports.startParsing = function() {
+module.exports.startParsing = function(rssFeedUrls) {
     init();
-    return Promise.map(config.rssFeedUrls, parseRssFeed);
+    return Promise.map(rssFeedUrls, parseRssFeed);
 };
 
 var init = function() {
@@ -20,14 +19,15 @@ var init = function() {
 
 var parseRssFeed = function(feedUrl) {
     logger.info('start parsing ' + feedUrl);
+
     return feedParser.getItemUrlsFromFeed(feedUrl)
         .then(function(itemUrls) {
             logger.info(itemUrls.length + ' item-urls found');
-            return checkItemUrls(itemUrls);
+            return checkItemUrls(itemUrls, feedUrl);
         });
 };
 
-var checkItemUrls = function(itemUrls) {
+var checkItemUrls = function(itemUrls, feedUrl) {
     return Promise.map(itemUrls, function(itemUrl) {
         return urlChecker.check(itemUrl)
             .then(function(data) {
@@ -45,6 +45,6 @@ var checkItemUrls = function(itemUrls) {
     }).then(function() {
         logger.info('finished - success: ' + successCount + ', failed: ' + failedCount);
 
-        return {successCount: successCount, failedCount: failedCount};
+        return {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
     });
 };
