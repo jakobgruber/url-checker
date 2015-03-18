@@ -11,19 +11,31 @@
 
 /* ----------- result panel */
 .result-panel {
-
+    margin-top: 10px;
+    background-color: black;
+    padding: 5px 10px;
+    max-height: 80vh;
+    overflow: scroll;
+    width: 900px;
 }
 
 
 /* ----------- messages */
-.status-msg {
-    color:green;
+.status-msg, .result, .error-msg {
+    margin: 0px;
+}
+
+.status-msg, .result {
+    color:lightgrey;
 }
 
 .error-msg {
-    color:red;
+    color:tomato;
 }
 
 .result {
-    border-top: 1px solid black;
+    margin-top: 5px;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    padding: 5px 0px;
 }

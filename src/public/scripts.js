@@ -8,26 +8,18 @@
         var msgTemplate = Handlebars.compile(msgTemplateScript);
         var resultTemplate = Handlebars.compile(resultTemplateScript);
 
+        var addMsg, scrollToBottom;
+
         this.clearPanel = function() {
             el.innerHTML = "";
         };
 
-        this.addStatus = function(statusMsg) {
-            var context = {
-                class: 'status-msg',
-                msg: statusMsg
-            };
-
-            el.innerHTML += msgTemplate(context);
+        this.addStatus = function(status) {
+            addMsg('status-msg', status);
         };
 
-        this.addError = function(errorMsg) {
-            var context = {
-                class: 'error-msg',
-                msg: errorMsg
-            };
-
-            el.innerHTML += msgTemplate(context);
+        this.addError = function(error) {
+            addMsg('error-msg', status);
         };
 
         this.addResult = function(result) {
@@ -38,8 +30,22 @@
             };
 
             el.innerHTML += resultTemplate(context);
+            scrollToBottom();
         };
 
+        addMsg = function(style, msg) {
+            var context = {
+                class: style,
+                msg: msg
+            };
+
+            el.innerHTML += msgTemplate(context);
+            scrollToBottom();
+        }
+
+        scrollToBottom = function() {
+            el.scrollTop = el.scrollHeight;
+        }
     }
 
     function ServerWrapper() {
