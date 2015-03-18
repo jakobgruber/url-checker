@@ -46,8 +46,14 @@ var onDisconnect = function(socket) {
 
 var onStartNewCheck = function(socket) {
     socket.on('start-new-url-check', function() {
-        parserManager.startParsing(config.rssFeedUrls);
         logger.info('client requests new url-check ' + socket.id);
+
+        if (parserManager.isParsing()) {
+            logger.info('request canceled, already parsing');
+            return socket.emit('new-error', 'request canceled, already parsing');
+        }
+
+        parserManager.startParsing(config.rssFeedUrls);
     });
 };
 

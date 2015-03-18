@@ -7,19 +7,26 @@ var urlChecker          = require('./urlChecker');
 
 var successCount = 0;
 var failedCount = 0;
+var _isParsing = false;
+
+
+module.exports.setSocketWrapper = function(_socketWrapper) {
+    socketWrapper = _socketWrapper;
+};
+
+module.exports.isParsing = function() {
+    return _isParsing;
+};
 
 module.exports.startParsing = function(rssFeedUrls) {
     init();
     return Promise.map(rssFeedUrls, parseRssFeed);
 };
 
-module.exports.setSocketWrapper = function(_socketWrapper) {
-    socketWrapper = _socketWrapper;
-};
-
 var init = function() {
     successCount = 0;
     failedCount = 0;
+    _isParsing = true;
 };
 
 var parseRssFeed = function(feedUrl) {
@@ -28,12 +35,15 @@ var parseRssFeed = function(feedUrl) {
     return feedParser.getItemUrlsFromFeed(feedUrl)
         .then(function(itemUrls) {
             socketWrapper.broadCastNewStatus(itemUrls.length + ' item-urls found for ' + feedUrl);
-            return checkItemUrls(itemUrls, feedUrl);
+            return checkItemUrls(itemUrls);
+        }).then(function() {
+            return sendParseResult(feedUrl);
         });
 };
 
-var checkItemUrls = function(itemUrls, feedUrl) {
+var checkItemUrls = function(itemUrls) {
     return Promise.map(itemUrls, function(itemUrl) {
+
         return urlChecker.check(itemUrl)
             .then(function(data) {
                 socketWrapper.broadCastNewStatus('success - ' + itemUrl);
@@ -48,11 +58,14 @@ var checkItemUrls = function(itemUrls, feedUrl) {
                 socketWrapper.broadCastErrorMsg('Error - ' + itemUrl);
                 failedCount++;
             });
-    }).then(function() {
-        var result = {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
-
-        socketWrapper.broadCastResult(result);
-
-        return result;
     });
+};
+
+var sendParseResult = function(feedUrl) {
+    _isParsing = false;
+    var result = {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
+
+    socketWrapper.broadCastResult(result);
+
+    return result;
 };
