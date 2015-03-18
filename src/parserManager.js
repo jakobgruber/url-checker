@@ -45,7 +45,7 @@ var checkItemUrls = function(itemUrls, feedUrl) {
                 socketWrapper.broadCastErrorMsg('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
                 failedCount++;
             }).catch(function(err) {
-                socketWrapper.broadCastErrorMsg(err);
+                socketWrapper.broadCastErrorMsg('Error - ' + itemUrl);
                 failedCount++;
             });
     }).then(function() {
