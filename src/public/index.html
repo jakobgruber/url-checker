@@ -12,15 +12,18 @@
         <div class="main-panel">
             <h3>url checker</h3>
             <button id="start-check">start</button>
+            <button id="clear-result">clear</button>
         </div>
 
         <div class="result-panel" id="result-panel">
-            <p class="status-msg">nothing done yet, click on start-btn</p>
         </div>
 
     </section>
 
 
+    <script id="empty-resultpanel-template" type="text/x-handlebars-template">
+        <p class="status-msg">nothing done yet, click on start-btn</p>
+    </script>
     <script id="new-msg-template" type="text/x-handlebars-template">
         <p class="{{class}}">{{msg}}</p>
     </script>

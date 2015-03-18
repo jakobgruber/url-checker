@@ -4,14 +4,16 @@
         var el = document.getElementById('result-panel');
         var msgTemplateScript = document.getElementById('new-msg-template').innerHTML;
         var resultTemplateScript = document.getElementById('new-result-template').innerHTML;
+        var emptyTemplateScript = document.getElementById('empty-resultpanel-template').innerHTML;
 
         var msgTemplate = Handlebars.compile(msgTemplateScript);
         var resultTemplate = Handlebars.compile(resultTemplateScript);
+        var emptyTemplate = Handlebars.compile(emptyTemplateScript);
 
         var addMsg, scrollToBottom;
 
         this.clearPanel = function() {
-            el.innerHTML = "";
+            el.innerHTML = emptyTemplate();
         };
 
         this.addStatus = function(status) {
@@ -64,15 +66,22 @@
 
     function MainPanel(resultPanel, serverWrapper) {
         var startBtn = document.getElementById('start-check');
+        var clearBtn = document.getElementById('clear-result');
 
         this.init = function() {
             startBtn.addEventListener('click', startNewCheck, false);
+            clearBtn.addEventListener('click', clearResultPanel, false);
+
+            resultPanel.clearPanel();
             serverWrapper.setupServerListeners(resultPanel);
         };
 
         var startNewCheck = function() {
-            resultPanel.clearPanel();
             serverWrapper.sendNewCheckRequest();
+        };
+
+        var clearResultPanel = function() {
+            resultPanel.clearPanel();
         };
     }
 
