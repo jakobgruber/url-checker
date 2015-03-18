@@ -5,13 +5,15 @@ var config              = require('./config');
 var parserManager       = require('./parserManager');
 
 var io;
+var clients = {}
 
 module.exports.setup = function(_io) {
 
     io = _io;
-
+    io.sockets.setMaxListeners(0);
     io.on('connection',function(socket) {
         logger.info('new client - ' + socket.id);
+        clients[socket.id] = socket;
 
         setupClientEventListeners(socket);
     });
@@ -30,21 +32,22 @@ module.exports.broadCastResult = function(result) {
     io.emit('new-result', result);
 };
 
-
-
 var setupClientEventListeners = function(socket) {
-    socket.on('disconnect', onDisconnect);
-
-    socket.on('start-new-url-check', startNewCheck);
+    onDisconnect(socket);
+    onStartNewCheck(socket);
 };
 
 var onDisconnect = function(socket) {
-    logger.info('client disconnect - ' + socket.id)
+    socket.on('disconnect', function() {
+        delete clients[socket.id];
+        logger.info('client disconnect - ' + socket.id);
+    });
 };
 
-var startNewCheck = function() {
-    logger.info('client requests new url-check ');
-
-    parserManager.startParsing(config.rssFeedUrls);
+var onStartNewCheck = function(socket) {
+    socket.on('start-new-url-check', function() {
+        parserManager.startParsing(config.rssFeedUrls);
+        logger.info('client requests new url-check ' + socket.id);
+    });
 };
 

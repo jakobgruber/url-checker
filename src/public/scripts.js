@@ -19,7 +19,7 @@
         };
 
         this.addError = function(error) {
-            addMsg('error-msg', status);
+            addMsg('error-msg', error);
         };
 
         this.addResult = function(result) {

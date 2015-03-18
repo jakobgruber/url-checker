@@ -3,10 +3,10 @@ var app                 = express();
 var http                = require('http').Server(app);
 var io                  = require('socket.io')(http);
 
-var config              = require('./config');
-var parserManager       = require('./parserManager');
-var logger              = require('./logger');
-var socketWrapper       = require('./socketWrapper');
+var config              = require('./server/config');
+var parserManager       = require('./server/parserManager');
+var logger              = require('./server/logger');
+var socketWrapper       = require('./server/socketWrapper');
 
 // ------------- setup
 socketWrapper.setup(io);

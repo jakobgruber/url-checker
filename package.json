@@ -4,9 +4,7 @@
   "description": "checks urls from rss-feeds",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/server.js",
-    "debug": "node --debug ./src/server.js"
+    "start": "node ./src/server.js"
   },
   "author": "Jakob Gruber",
   "license": "ISC",

@@ -3,8 +3,8 @@ var expect          = chai.expect;
 var chaiAsPromised  = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-var parserManager   = require('./../../../src/parserManager');
-var config          = require('./../../../src/config');
+var parserManager   = require('./../../../src/server/parserManager');
+var config          = require('./../../../src/server/config');
 
 var dummySocketWrapper = {
     broadCastNewStatus: function() {},
