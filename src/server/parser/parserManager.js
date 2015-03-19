@@ -1,7 +1,13 @@
+/*
+ manages parsing
+ - takes rss-feeds from config
+ - fetches item-urls
+ - checks if every item-url is online
+*/
+
 var Promise             = require('bluebird');
 var errors              = require('request-promise/errors');
 
-var logger              = require('./logger');
 var feedParser          = require('./feedParser');
 var urlChecker          = require('./urlChecker');
 
@@ -66,6 +72,5 @@ var sendParseResult = function(feedUrl) {
     var result = {feedUrl: feedUrl, successCount: successCount, failedCount: failedCount};
 
     socketWrapper.broadCastResult(result);
-
     return result;
 };

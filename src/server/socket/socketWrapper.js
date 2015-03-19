@@ -1,22 +1,13 @@
-
-var logger              = require('./logger');
-
-var config              = require('./config');
-var parserManager       = require('./parserManager');
+var logger              = require('./../utils/logger');
+var config              = require('./../config/config');
+var parserManager       = require('./../parser/parserManager');
 
 var io;
-var clients = {}
+var clients = {};
 
 module.exports.setup = function(_io) {
-
     io = _io;
-    io.sockets.setMaxListeners(0);
-    io.on('connection',function(socket) {
-        logger.info('new client - ' + socket.id);
-        clients[socket.id] = socket;
-
-        setupClientEventListeners(socket);
-    });
+    setupClientEventListeners();
 };
 
 module.exports.broadCastNewStatus = function(msg) {
@@ -32,9 +23,15 @@ module.exports.broadCastResult = function(result) {
     io.emit('new-result', result);
 };
 
-var setupClientEventListeners = function(socket) {
-    onDisconnect(socket);
-    onStartNewCheck(socket);
+
+var setupClientEventListeners = function() {
+    io.on('connection',function(socket) {
+        logger.info('new client - ' + socket.id);
+        clients[socket.id] = socket;
+
+        onDisconnect(socket);
+        onStartNewCheck(socket);
+    });
 };
 
 var onDisconnect = function(socket) {

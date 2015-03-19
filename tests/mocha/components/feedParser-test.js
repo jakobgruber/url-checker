@@ -3,8 +3,8 @@ var expect          = chai.expect;
 var chaiAsPromised  = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-var feedParser      = require('./../../../src/server/feedParser');
-var config          = require('./../../../src/server/config');
+var feedParser      = require('./../../../src/server/parser/feedParser');
+var config          = require('./../../../src/server/config/config');
 
 describe("test feed parsing", function() {
     var app, express, server;

@@ -3,24 +3,16 @@ var app                 = express();
 var http                = require('http').Server(app);
 var io                  = require('socket.io')(http);
 
-var config              = require('./server/config');
-var parserManager       = require('./server/parserManager');
-var logger              = require('./server/logger');
-var socketWrapper       = require('./server/socketWrapper');
+var config              = require('./server/config/config');
+var parserManager       = require('./server/parser/parserManager');
+var logger              = require('./server/utils/logger');
+var socketWrapper       = require('./server/socket/socketWrapper');
+var routes              = require('./server/routes/routes');
 
 // ------------- setup
 socketWrapper.setup(io);
+routes.setup(app, express);
 parserManager.setSocketWrapper(socketWrapper);
-
-// ------------- routes
-app.get('/check', function(req, res) {
-    parserManager.startParsing(config.rssFeedUrls)
-        .then(function(data) {
-            res.json(data);
-        });
-});
-
-app.use(express.static(__dirname + '/public'));
 
 // ------------- start
 http.listen(app.listen(config.port));
