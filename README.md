@@ -12,3 +12,4 @@ fetches urls from rss-feeds and verifies if every item of the feed is online
 
 ##run
 - open "localhost:8081" in browser
+
