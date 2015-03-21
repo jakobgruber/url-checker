@@ -1,3 +1,7 @@
+// checks if website with specified url is online
+// e.g. rss-feed contains an old url
+// e.g. there is a redirect-loop of website with specified url
+
 var request             = require('request-promise');
 var Promise             = require('bluebird');
 var validator           = require('validator');
