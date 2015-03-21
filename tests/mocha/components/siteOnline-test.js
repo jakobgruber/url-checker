@@ -3,7 +3,7 @@ var expect          = chai.expect;
 var chaiAsPromised  = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-var urlChecker      = require('./../../../src/server/checks/urlOnline');
+var urlChecker      = require('./../../../src/server/checks/siteOnline');
 
 var validUrl = 'http://www.google.com';
 

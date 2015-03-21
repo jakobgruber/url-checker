@@ -4,7 +4,7 @@ var chaiAsPromised  = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 var parserManager   = require('./../../../src/server/parser/parserManager');
-var config          = require('./../../../src/server/config/config');
+var testServer      = require('./../utils/testServer');
 
 var dummySocketWrapper = {
     broadCastNewStatus: function() {},
@@ -17,21 +17,16 @@ describe("test parser manager", function() {
 
     // create static route, so test-methods can access test-feed as URI
     before(function() {
-        express = require('express');
-        app = express();
-
-        app.use(express.static(__dirname + '/files'));
-        server = app.listen(config.testPort);
-
+        testServer.start();
         parserManager.setSocketWrapper(dummySocketWrapper);
     });
 
     after(function() {
-        server.close();
+        testServer.end();
     });
 
 
-    var validFeedUrl = 'http://127.0.0.1:'+config.testPort+'/valid-feed.rss';
+    var validFeedUrl = testServer.getBaseUrl() + '/valid-feed.rss';
 
     it("should not parse empty url", function() {
         return expect(parserManager.startParsing([''])).to.be.rejected;
