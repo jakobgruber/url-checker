@@ -30,7 +30,7 @@ module.exports.check = function(url) {
 var checkRequestPromise = function(requestPromise, deferred, url) {
     requestPromise
         .then(function (response) {
-            deferred.resolve({reachable: true, url: url});
+            deferred.resolve({reachable: true, url: url, response: response});
         })
         .catch(function (err) {
             deferred.reject(err);

@@ -34,12 +34,14 @@ describe('test url check methods', function() {
     });
 
     it('should resolve with valid object', function() {
-        return expect(urlChecker.check(validUrl)).to.eventually.include.keys('reachable', 'url');
+        return expect(urlChecker.check(validUrl)).to.eventually.have.all.keys('reachable', 'url', 'response');
     });
 
-    it('should resolve with valid keys', function() {
-        var obj = {reachable: true, url: validUrl};
-        return expect(urlChecker.check(validUrl)).to.eventually.deep.equals(obj);
+    it('should resolve with reachable=true', function() {
+        return expect(urlChecker.check(validUrl)).to.eventually.have.deep.property('reachable', true);
     });
 
+    it('should resolve with validUrl=http://www.google.com', function() {
+        return expect(urlChecker.check(validUrl)).to.eventually.have.deep.property('url', 'http://www.google.com');
+    });
 });
