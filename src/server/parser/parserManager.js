@@ -9,7 +9,7 @@ var Promise             = require('bluebird');
 var errors              = require('request-promise/errors');
 
 var feedParser          = require('./feedParser');
-var urlChecker          = require('./urlChecker');
+var urlChecker          = require('./../checks/urlOnline');
 
 var successCount = 0;
 var failedCount = 0;
