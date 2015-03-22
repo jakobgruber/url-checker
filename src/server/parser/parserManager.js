@@ -5,11 +5,13 @@
  - checks if every item-url is online
 */
 
-var Promise             = require('bluebird');
-var errors              = require('request-promise/errors');
+var Promise                 = require('bluebird');
+var errors                  = require('request-promise/errors');
 
-var feedParser          = require('./feedParser');
-var urlChecker          = require('./../checks/urlOnline');
+var feedParser              = require('./feedParser');
+var siteOnline              = require('./../checks/siteOnline');
+var siteComplete            = require('./../checks/siteComplete');
+var SiteNotCompleteError    = require('./../utils/SiteNotCompleteError');
 
 var successCount = 0;
 var failedCount = 0;
@@ -50,10 +52,15 @@ var parseRssFeed = function(feedUrl) {
 var checkItemUrls = function(itemUrls) {
     return Promise.map(itemUrls, function(itemUrl) {
 
-        return urlChecker.check(itemUrl)
-            .then(function(data) {
+        return siteOnline.check(itemUrl)
+            .then(function(result) {
+                return siteComplete.check(result.body);
+            }).then(function() {
                 socketWrapper.broadCastNewStatus('success - ' + itemUrl);
                 successCount++;
+            }).catch(SiteNotCompleteError, function() {
+                socketWrapper.broadCastErrorMsg('SiteNotCompleteError - ' + itemUrl);
+                failedCount++;
             }).catch(errors.RequestError, function (reason) {
                 socketWrapper.broadCastErrorMsg('RequestError - ' + reason.options.uri + ' - ' + reason.statusCode);
                 failedCount++;
@@ -61,7 +68,7 @@ var checkItemUrls = function(itemUrls) {
                 socketWrapper.broadCastErrorMsg('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
                 failedCount++;
             }).catch(function(err) {
-                socketWrapper.broadCastErrorMsg('Error - ' + itemUrl);
+                socketWrapper.broadCastErrorMsg('Error - ' + itemUrl + err.message);
                 failedCount++;
             });
     });

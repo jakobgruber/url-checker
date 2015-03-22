@@ -7,18 +7,17 @@ var path            = require('path');
 var config          = require('./../../../src/server/config/config');
 var app, server;
 
-function TestServer() {
-    this.start = function() {
-        app = express();
-        app.use(express.static(path.join(__dirname, '../components/files')));
-        server = app.listen(config.testPort);
-    };
 
-    this.end = function() {
-        server.close();
-    };
+module.exports.start = function() {
+    app = express();
+    app.use(express.static(path.join(__dirname, '../components/files')));
+    server = app.listen(config.testPort);
 };
 
-module.exports.getInstance = function() {
-    return new TestServer();
+module.exports.end = function() {
+    server.close();
+};
+
+module.exports.getBaseUrl = function() {
+    return 'http://127.0.0.1:'+config.testPort;
 };

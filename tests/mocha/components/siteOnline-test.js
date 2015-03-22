@@ -7,7 +7,7 @@ var urlChecker      = require('./../../../src/server/checks/siteOnline');
 
 var validUrl = 'http://www.google.com';
 
-describe('test url check methods', function() {
+describe('test site-online-check methods', function() {
 
     it('should reject on empty url', function() {
         return expect(urlChecker.check('')).to.be.rejected;
@@ -34,7 +34,7 @@ describe('test url check methods', function() {
     });
 
     it('should resolve with valid object', function() {
-        return expect(urlChecker.check(validUrl)).to.eventually.have.all.keys('reachable', 'url', 'response');
+        return expect(urlChecker.check(validUrl)).to.eventually.have.all.keys('reachable', 'url', 'body');
     });
 
     it('should resolve with reachable=true', function() {

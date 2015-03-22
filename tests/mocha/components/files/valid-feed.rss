@@ -72,5 +72,12 @@
                 <item><link></link></item>
 
                 <item><link>invalid url</link></item>
+
+                <item>
+                    <link>http://127.0.0.1:3344/complete.html</link>
+                </item>
+                <item>
+                    <link>http://127.0.0.1:3344/incomplete.html</link>
+                </item>
          </channel>
     </rss>

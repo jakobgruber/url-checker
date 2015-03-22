@@ -33,7 +33,7 @@ describe("test parser manager", function() {
     });
 
     it("should only parse valid urls", function() {
-        var obj = [{feedUrl: validFeedUrl, successCount: 3, failedCount: 1}];
+        var obj = [{feedUrl: validFeedUrl, successCount: 4, failedCount: 2}];
         return expect(parserManager.startParsing([validFeedUrl])).to.eventually.deep.equals(obj);
     });
 });
