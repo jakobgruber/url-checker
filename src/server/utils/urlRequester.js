@@ -1,6 +1,3 @@
-// checks if website with specified url is online
-// e.g. rss-feed contains an old url
-// e.g. there is a redirect-loop of website with specified url
 
 var request             = require('request-promise');
 var Promise             = require('bluebird');
@@ -21,21 +18,27 @@ var requestOptions = {
     encoding: null
 };
 
-module.exports.check = function(url) {
+module.exports.getContentFrom = function(url) {
     var deferred = Promise.pending();
 
-    if(validator.isURL(url)) {
-        var requestPromise = request(url, requestOptions);
-        checkRequestPromise(requestPromise, deferred, url);
-    } else {
-        deferred.reject(new Error('invalid: ' + url));
+    if(checkValidUrl(deferred, url)) {
+        requestUrl(deferred, url);
     }
 
     return deferred.promise;
 };
 
-var checkRequestPromise = function(requestPromise, deferred, url) {
-    requestPromise
+var checkValidUrl = function(deferred, url) {
+    if(!validator.isURL(url)) {
+        deferred.reject(new Error('invalid: ' + url));
+        return false;
+    }
+
+    return true;
+};
+
+var requestUrl = function(deferred, url) {
+    request(url, requestOptions)
         .then(function (response) {
             return unzipBody(response);
         }).then(function(unzipped) {

@@ -9,7 +9,7 @@ var Promise                 = require('bluebird');
 var errors                  = require('request-promise/errors');
 
 var feedParser              = require('./feedParser');
-var siteOnline              = require('./../checks/siteOnline');
+var urlRequester            = require('./../utils/urlRequester');
 var siteComplete            = require('./../checks/siteComplete');
 var SiteNotCompleteError    = require('./../utils/SiteNotCompleteError');
 
@@ -52,9 +52,9 @@ var parseRssFeed = function(feedUrl) {
 var checkItemUrls = function(itemUrls) {
     return Promise.map(itemUrls, function(itemUrl) {
 
-        return siteOnline.check(itemUrl)
+        return urlRequester.getContentFrom(itemUrl)
             .then(function(result) {
-                return siteComplete.check(result.body);
+                return siteComplete.check(result);
             }).then(function() {
                 socketWrapper.broadCastNewStatus('success - ' + itemUrl);
                 successCount++;

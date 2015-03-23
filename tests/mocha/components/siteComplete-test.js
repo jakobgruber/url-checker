@@ -23,12 +23,16 @@ var SiteNotCompleteError    = require('./../../../src/server/utils/SiteNotComple
     });
 
     it ('should reject if body is incomplete', function() {
-        var incompleteHtml = fs.readFileSync(__dirname + '/files/incomplete.html', "utf8");
-        expect(function() { siteComplete.check(incompleteHtml) }).to.throw(SiteNotCompleteError);
+        var incompleteHtml = fs.readFileSync(__dirname + '/files/incomplete.html', 'utf8');
+        var result = {body:incompleteHtml, url:'incomplete.html'};
+        
+        expect(function() { siteComplete.check(result) }).to.throw(SiteNotCompleteError);
     });
 
     it ('should fulfill if body is complete', function() {
-        var completeHtml = fs.readFileSync(__dirname + '/files/complete.html', "utf8");
-        expect(function() { siteComplete.check(completeHtml) }).to.not.throw();
+        var completeHtml = fs.readFileSync(__dirname + '/files/complete.html', 'utf8');
+        var result = {body:completeHtml, url:'complete.html'};
+
+        expect(function() { siteComplete.check(result) }).to.not.throw();
     });
 });
