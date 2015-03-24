@@ -32,10 +32,6 @@ describe('test url-requester methods', function() {
         return expect(urlRequester.getContentFrom(invalidUrl)).to.be.rejected;
     });
 
-    it('should reject on invalid url - 2', function() {
-        return expect(urlRequester.getContentFrom('http:google.at')).to.be.rejected;
-    });
-
     it('should reject on valid but not reachable url', function() {
         return expect(urlRequester.getContentFrom(nonExistingUrl)).to.be.rejected;
     });

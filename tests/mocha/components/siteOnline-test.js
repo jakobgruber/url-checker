@@ -32,10 +32,6 @@ describe('test site-online-check method', function() {
         return expect(siteOnline.check(invalidUrl)).to.be.rejectedWith(SiteNotOnlineError);
     });
 
-    it('should reject on invalid url - 2', function() {
-        return expect(siteOnline.check('http:google.at')).to.be.rejectedWith(SiteNotOnlineError);
-    });
-
     it('should reject on valid but not reachable url', function() {
         return expect(siteOnline.check(nonExistingUrl)).to.be.rejectedWith(SiteNotOnlineError);
     });
