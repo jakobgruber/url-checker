@@ -1,7 +1,7 @@
 // checks body of website if it contains </html>
 // e.g. a site could be incomplete cause a php-error stops code-execution
 
-var SiteNotCompleteError = require('./../utils/SiteNotCompleteError');
+var SiteNotCompleteError = require('./../errors/SiteNotCompleteError');
 
 module.exports.check = function(result) {
     if (!result || !result.body || !result.url) {

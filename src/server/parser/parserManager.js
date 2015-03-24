@@ -6,12 +6,12 @@
 */
 
 var Promise                 = require('bluebird');
-var errors                  = require('request-promise/errors');
 
 var feedParser              = require('./feedParser');
-var urlRequester            = require('./../utils/urlRequester');
+var siteOnline              = require('./../checks/siteOnline');
 var siteComplete            = require('./../checks/siteComplete');
-var SiteNotCompleteError    = require('./../utils/SiteNotCompleteError');
+var SiteNotCompleteError    = require('./../errors/SiteNotCompleteError');
+var SiteNotOnlineError      = require('./../errors/SiteNotOnlineError');
 
 var successCount = 0;
 var failedCount = 0;
@@ -50,28 +50,23 @@ var parseRssFeed = function(feedUrl) {
 };
 
 var checkItemUrls = function(itemUrls) {
-    return Promise.map(itemUrls, function(itemUrl) {
+    return Promise.map(itemUrls, checkItemUrl);
+};
 
-        return urlRequester.getContentFrom(itemUrl)
-            .then(function(result) {
-                return siteComplete.check(result);
-            }).then(function() {
-                socketWrapper.broadCastNewStatus('success - ' + itemUrl);
-                successCount++;
-            }).catch(SiteNotCompleteError, function() {
-                socketWrapper.broadCastErrorMsg('SiteNotCompleteError - ' + itemUrl);
-                failedCount++;
-            }).catch(errors.RequestError, function (reason) {
-                socketWrapper.broadCastErrorMsg('RequestError - ' + reason.options.uri + ' - ' + reason.statusCode);
-                failedCount++;
-            }).catch(errors.StatusCodeError, function (reason) {
-                socketWrapper.broadCastErrorMsg('StatusCodeError - ' + reason.options.uri + ' - ' + reason.statusCode);
-                failedCount++;
-            }).catch(function(err) {
-                socketWrapper.broadCastErrorMsg('Error - ' + itemUrl + err.message);
-                failedCount++;
-            });
-    });
+var checkItemUrl = function(itemUrl) {
+    return siteOnline.check(itemUrl)
+        .then(function(result) {
+            return siteComplete.check(result);
+        }).then(function() {
+            socketWrapper.broadCastNewStatus('success - ' + itemUrl);
+            successCount++;
+        }).catch(SiteNotCompleteError, function() {
+            socketWrapper.broadCastErrorMsg('SiteNotCompleteError - ' + itemUrl);
+            failedCount++;
+        }).catch(SiteNotOnlineError, function() {
+            socketWrapper.broadCastErrorMsg('SiteNotOnlineError - ' + itemUrl);
+            failedCount++;
+        });
 };
 
 var sendParseResult = function(feedUrl) {

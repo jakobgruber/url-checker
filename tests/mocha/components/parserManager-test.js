@@ -13,8 +13,6 @@ var dummySocketWrapper = {
 };
 
 describe("test parser manager", function() {
-    var app, express, server;
-
     // create static route, so test-methods can access test-feed as URI
     before(function() {
         testServer.start();
@@ -24,7 +22,6 @@ describe("test parser manager", function() {
     after(function() {
         testServer.end();
     });
-
 
     var validFeedUrl = testServer.getBaseUrl() + '/valid-feed.rss';
 

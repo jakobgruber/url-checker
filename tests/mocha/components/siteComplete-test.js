@@ -5,7 +5,7 @@ var chaiAsPromised  = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 var siteComplete            = require('./../../../src/server/checks/siteComplete');
-var SiteNotCompleteError    = require('./../../../src/server/utils/SiteNotCompleteError');
+var SiteNotCompleteError    = require('./../../../src/server/errors/SiteNotCompleteError');
 
     describe('test site-complete-check methods', function() {
     var app, express, server;
@@ -25,7 +25,7 @@ var SiteNotCompleteError    = require('./../../../src/server/utils/SiteNotComple
     it ('should reject if body is incomplete', function() {
         var incompleteHtml = fs.readFileSync(__dirname + '/files/incomplete.html', 'utf8');
         var result = {body:incompleteHtml, url:'incomplete.html'};
-        
+
         expect(function() { siteComplete.check(result) }).to.throw(SiteNotCompleteError);
     });
 
